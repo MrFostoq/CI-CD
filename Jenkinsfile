@@ -9,7 +9,7 @@ pipeline {
     environment {
         APP_NAME = 'Test-app-pipeline'
         RELEASE = '1.0.0'
-        DOCKER_USER = 'Fostoq'
+        DOCKER_USER = 'fostoq'
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub'
     }
 
