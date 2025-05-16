@@ -74,7 +74,7 @@ pipeline {
                     def imageName = "${DOCKER_USER}/${APP_NAME}"
                     def imageTag = "${RELEASE}-${env.BUILD_NUMBER}"
 
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS_ID}") {
+                    docker.withRegistry('', "${DOCKERHUB_CREDENTIALS_ID}") {
                         def image = docker.build("${imageName}:${imageTag}")
                         image.push()
                     }
