@@ -19,15 +19,9 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build App') {
             steps {
-                sh 'mvn install -DskipTests'
-            }
-            post {
-                success {
-                    echo 'Archiving artifact'
-                    archiveArtifacts artifacts: '**/*.war'
-                }
+                sh 'mvn clean package'
             }
         }
 
