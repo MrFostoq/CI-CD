@@ -36,5 +36,13 @@ pipeline {
                 sh 'mvn checkstyle:checkstyle'
             }
         }
+        stage('Sonar code Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('sonar-server')
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
     }
 }
