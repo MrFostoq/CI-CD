@@ -5,7 +5,14 @@ pipeline {
         maven 'Maven3'
         jdk 'JDK17'
     }
-
+    environment {
+        APP_NAME = 'Test-app-pipeline'
+        RELEASE = '1.0.0'
+        DOCKER_USER = 'Fostoq'
+        DOCKER_PASS = 'dockerhub'
+        IMAGE_NAME = '${DOCKER_USER}' + '/' + '${APP_NAME}'
+        IMAGE_TAG = '${RELEASE}-${BUILD_NUMBER}'
+    }
     stages {
         stage('Cleanup workspace') {
             steps {
@@ -57,6 +64,16 @@ pipeline {
                     }
                 }
                 echo 'Quality Gate passed!'
+            }
+        }
+        stage('Docker Build & Push') {
+            steps {
+                script {
+                    docker.withRegistry('', DOCKER_PASS) {
+                        docker_image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                        image.push()
+                    }
+                }
             }
         }
     }
