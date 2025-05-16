@@ -90,20 +90,27 @@ pipeline {
             }
         }
         stage("Trivy Scan") {
-           steps {
-               script {
-	            sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image fostoq/got-to-app:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
-               }
-           }
-       }
+            steps {
+                script {
+                    def imageName = "${DOCKER_USER}/${APP_NAME}"
+                    def imageTag = "${RELEASE}-${env.BUILD_NUMBER}"
+                    def fullImage = "${imageName}:${imageTag}"
 
-       stage ('Cleanup Artifacts') {
-           steps {
-               script {
-                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker rmi ${IMAGE_NAME}:latest"
-               }
-          }
-       }
+                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${fullImage} --no-progress --scanners vuln --exit-code 1 --severity HIGH,CRITICAL --format table"
+                }
+            }
+        }
+
+
+        stage ('Cleanup Artifacts') {
+            steps {
+                script {
+                    def imageName = "${DOCKER_USER}/${APP_NAME}"
+                    def imageTag = "${RELEASE}-${env.BUILD_NUMBER}"
+
+                    sh "docker rmi ${imageName}:${imageTag} || true"
+                }
+            }
+        }
     }
 }
