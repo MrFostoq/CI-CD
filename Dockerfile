@@ -1,3 +1,11 @@
-FROM tomcat:latest
-RUN cp -R  /usr/local/tomcat/webapps.dist/*  /usr/local/tomcat/webapps
-COPY /webapp/target/*.jar /usr/local/tomcat/webapps
+# Use a base image with Java 17
+FROM eclipse-temurin:17-jdk
+
+# Set working directory
+WORKDIR /app
+
+# Copy the built jar file into the image
+COPY target/*.jar app.jar
+
+# Run the jar file
+ENTRYPOINT ["java", "-jar", "app.jar"]
