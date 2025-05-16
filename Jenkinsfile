@@ -1,18 +1,18 @@
 pipeline {
     agent { label 'Jenkins-agent' }
-    
+
     tools {
         maven 'Maven3'
         jdk 'JDK17'
     }
+
     environment {
         APP_NAME = 'Test-app-pipeline'
         RELEASE = '1.0.0'
         DOCKER_USER = 'Fostoq'
-        DOCKER_PASS = 'dockerhub'
-        IMAGE_NAME = '${DOCKER_USER}' + '/' + '${APP_NAME}'
-        IMAGE_TAG = '${RELEASE}-${BUILD_NUMBER}'
+        DOCKERHUB_CREDENTIALS_ID = 'dockerhub'
     }
+
     stages {
         stage('Cleanup workspace') {
             steps {
@@ -43,21 +43,22 @@ pipeline {
                 sh 'mvn checkstyle:checkstyle'
             }
         }
+
         stage('Sonar code Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('sonar-server'){
+                    withSonarQubeEnv('sonar-server') {
                         sh 'mvn sonar:sonar'
                     }
                 }
             }
         }
+
         stage('Quality Gate') {
             steps {
-                // Wait for the SonarQube Quality Gate result
                 script {
-                    timeout(time: 10, unit: 'MINUTES') { // Wait up to 10 minutes for the Quality Gate result
-                        def qg = waitForQualityGate() // Check the Quality Gate status
+                    timeout(time: 10, unit: 'MINUTES') {
+                        def qg = waitForQualityGate()
                         if (qg.status != 'OK') {
                             error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
                         }
@@ -66,11 +67,15 @@ pipeline {
                 echo 'Quality Gate passed!'
             }
         }
+
         stage('Docker Build & Push') {
             steps {
                 script {
-                    docker.withRegistry('', DOCKER_PASS) {
-                        docker_image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    def imageName = "${DOCKER_USER}/${APP_NAME}"
+                    def imageTag = "${RELEASE}-${env.BUILD_NUMBER}"
+
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS_ID}") {
+                        def image = docker.build("${imageName}:${imageTag}")
                         image.push()
                     }
                 }
