@@ -80,7 +80,7 @@ pipeline {
                     def imageName = "${DOCKER_USER}/${APP_NAME}"
                     def imageTag = "${RELEASE}-${env.BUILD_NUMBER}"
 
-                    sh 'find . -name "*.war"'
+                    sh 'find . -name "*.jar"'
 
                     docker.withRegistry('', "${DOCKERHUB_CREDENTIALS_ID}") {
                         def image = docker.build("${imageName}:${imageTag}")
