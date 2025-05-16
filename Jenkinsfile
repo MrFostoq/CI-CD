@@ -45,5 +45,19 @@ pipeline {
                 }
             }
         }
+        stage('Quality Gate') {
+            steps {
+                // Wait for the SonarQube Quality Gate result
+                script {
+                    timeout(time: 10, unit: 'MINUTES') { // Wait up to 10 minutes for the Quality Gate result
+                        def qg = waitForQualityGate() // Check the Quality Gate status
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
+                        }
+                    }
+                }
+                echo 'Quality Gate passed!'
+            }
+        }
     }
 }
