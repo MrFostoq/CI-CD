@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        APP_NAME = 'got-to-app'
+        APP_NAME = 'reg-app'
         RELEASE = '1.0.0'
         DOCKER_USER = 'fostoq'
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub'
