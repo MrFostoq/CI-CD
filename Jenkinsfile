@@ -79,7 +79,7 @@ pipeline {
             steps {
                 script {
                     def imageName = "${DOCKER_USER}/${APP_NAME}"
-                    def env.IMAGE_TAG = "${RELEASE}-${env.BUILD_NUMBER}"
+                    env.IMAGE_TAG = "${RELEASE}-${env.BUILD_NUMBER}"
 
                     sh 'find . -name "*.war"'
 
@@ -94,7 +94,7 @@ pipeline {
             steps {
                 script {
                     def imageName = "${DOCKER_USER}/${APP_NAME}"
-                    def env.IMAGE_TAG = "${RELEASE}-${env.BUILD_NUMBER}"
+                    env.IMAGE_TAG = "${RELEASE}-${env.BUILD_NUMBER}"
                     def fullImage = "${imageName}:${IMAGE_TAG}"
 
                     sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${fullImage} --no-progress --scanners vuln --exit-code 1 --severity HIGH,CRITICAL --format table"
