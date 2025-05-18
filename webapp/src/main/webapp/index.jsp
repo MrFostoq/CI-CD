@@ -1,6 +1,6 @@
 <form action="action_page.php">
   <div class="container">
-    <h1>New user Register for DevOps Learning at Virtual TechBox Youtube Channel</h1>
+    <h1>This web for learning purposes </h1>
     <p>Please fill in this form to create an account.</p>
     <hr>
      
@@ -32,8 +32,5 @@
   </div>
 
    <h1> Thank You, Happy Learning </h1>
-   <h1> See You Again </h1>
-   <h1> test 2 </h1>
-   <h1> Fuch You </h1>
    
 </form>
